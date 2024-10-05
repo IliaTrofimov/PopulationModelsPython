@@ -113,19 +113,20 @@ class HeatmapUpdateHandler:
 
         X, Y = np.mgrid[self.xlim[0]:self.xlim[1]:complex(0, self.steps),
                         self.ylim[0]:self.ylim[1]:complex(0, self.steps)]
-        U, V = self.heatmap_fxy(0, X, Y)
+        U, V = self.heatmap_fxy(0, [X, Y])
         Z = np.hypot(U, V)
 
         logger.debug(f'on_heatmap_update: drawing...')
 
         if self._heatmap is None:
-            self._heatmap = self._axes.contourf(X, Y, Z)
+            self._heatmap = self._axes.contourf(X, Y, Z, cmap='plasma', levels=20)
             self._quiver = self._axes.quiver(X, Y, U, V)
             self._cbar = self._fig.colorbar(self._heatmap, ax=self._axes)
         else:
             self._cbar.remove()
+            self._heatmap.remove()
             self._axes.cla()
-            self._heatmap = self._axes.contourf(X, Y, Z)
+            self._heatmap = self._axes.contourf(X, Y, Z, cmap='plasma', levels=20)
             self._quiver = self._axes.quiver(X, Y, U, V)
             self._cbar = self._fig.colorbar(self._heatmap, ax=self._axes)
 
